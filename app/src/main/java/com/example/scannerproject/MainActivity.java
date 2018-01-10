@@ -44,11 +44,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         dbxAccountManager = DbxAccountManager.getInstance(getApplicationContext(), APP_KEY, APP_SECRET);
-        try {
-            dbxFs = DbxFileSystem.forAccount(dbxAccountManager.getLinkedAccount());
-        } catch (DbxException.Unauthorized unauthorized) {
-            unauthorized.printStackTrace();
-        }
+//        try {
+//            dbxFs = DbxFileSystem.forAccount(dbxAccountManager.getLinkedAccount());
+//        } catch (DbxException.Unauthorized unauthorized) {
+//            unauthorized.printStackTrace();
+//        }
         btnSound = findViewById(R.id.btnSound);
         textView = findViewById(R.id.textView);
         beapSound = MediaPlayer.create(this, R.raw.censor_beep_01);
