@@ -2,18 +2,15 @@ package com.example.scannerproject;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
-import com.google.zxing.ResultPoint;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -32,7 +29,7 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
         setContentView(zXingScannerView);
         // zXingScannerView.setAspectTolerance(0.5f);
         beapSound = MediaPlayer.create(this,R.raw.censor_beep_01);
-        data = new ArrayList<String>();
+        data = new ArrayList< >();
         zXingScannerView.setResultHandler(this);
         zXingScannerView.startCamera();
 
@@ -49,8 +46,9 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
     @Override
     public void handleResult(Result result) {
         beapSound.start();
-        Toast.makeText(getApplicationContext(),result.getText(),Toast.LENGTH_SHORT).show();
-        data.add(result.getText());
+        Toast.makeText(getApplicationContext(),result.getText().substring(9,13),Toast.LENGTH_SHORT).show();
+
+        data.add(result.getText().substring(9,13));
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
