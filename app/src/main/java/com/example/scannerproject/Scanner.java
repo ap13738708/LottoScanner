@@ -18,7 +18,7 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
 
     ZXingScannerView zXingScannerView;
     MediaPlayer beapSound;
-    ArrayList<String> data;
+    ArrayList<String> num_list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,7 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
         setContentView(zXingScannerView);
         // zXingScannerView.setAspectTolerance(0.5f);
         beapSound = MediaPlayer.create(this,R.raw.censor_beep_01);
-        data = new ArrayList< >();
+        num_list = new ArrayList< >();
         zXingScannerView.setResultHandler(this);
         zXingScannerView.startCamera();
 
@@ -48,7 +48,7 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
         beapSound.start();
         Toast.makeText(getApplicationContext(),result.getText().substring(9,13),Toast.LENGTH_SHORT).show();
 
-        data.add(result.getText().substring(9,13));
+        num_list.add(result.getText().substring(9,13));
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -60,15 +60,11 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        String all = "";
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 Intent intent= new Intent();
-                for (String txt : data){
-                    all += txt + "\n";
-                }
-                intent.putExtra("param", all);
+                intent.putStringArrayListExtra("num_list", num_list);
                 setResult(RESULT_OK, intent);
                 finish();
                 return true;
