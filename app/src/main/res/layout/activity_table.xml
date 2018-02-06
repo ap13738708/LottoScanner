@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_showMatched"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="matched number" />
+
+    <HorizontalScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:stretchColumns="1"
+    android:fillViewport="true"
+    android:id="@+id/scrollView">
+
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tv1"
+                android:layout_column="1"
+                android:padding="3dip"
+                android:text="...0..."
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv2"
+                android:layout_column="1"
+                android:text="|..1..."
+                android:padding="3dip"
+                android:textSize="16sp" />
+            <TextView
+                android:id="@+id/tv3"
+                android:layout_column="1"
+                android:text="|..2..."
+                android:padding="3dip"
+                android:textSize="16sp"/>
+            <TextView
+                android:id="@+id/tv4"
+                android:layout_column="1"
+                android:text="|..3..."
+                android:padding="3dip"
+                android:textSize="16sp"/>
+            <TextView
+                android:id="@+id/tv5"
+                android:layout_column="1"
+                android:text="|..4..."
+                android:padding="3dip"
+                android:textSize="16sp"/>
+            <TextView
+                android:id="@+id/tv6"
+                android:layout_column="1"
+                android:text="|..5..."
+                android:padding="3dip"
+                android:textSize="16sp"/>
+            <TextView
+                android:id="@+id/tv7"
+                android:layout_column="1"
+                android:text="|..6..."
+                android:padding="3dip"
+                android:textSize="16sp"/>
+            <TextView
+                android:id="@+id/tv8"
+                android:layout_column="1"
+                android:text="|..7..."
+                android:padding="3dip"
+                android:textSize="16sp"/>
+            <TextView
+                android:id="@+id/tv9"
+                android:layout_column="1"
+                android:text="|..8..."
+                android:padding="3dip"
+                android:textSize="16sp"/>
+            <TextView
+                android:id="@+id/tv10"
+                android:layout_column="1"
+                android:text="|..9..."
+                android:padding="3dip"
+                android:textSize="16sp"/>
+
+
+        </TableRow>
+    </TableLayout>
+    </HorizontalScrollView>
+
+</LinearLayout>

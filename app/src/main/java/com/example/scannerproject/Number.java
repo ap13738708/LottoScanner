@@ -6,15 +6,17 @@ package com.example.scannerproject;
 
 public class Number {
 
-    private String[] num;
+    private String num;
     private String lottoGroup;
+    private String phone;
 
-    public Number(String[] num, String lottoGroup) {
+    public Number(String num,String phone, String lottoGroup) {
         this.num = num;
         this.lottoGroup = lottoGroup;
+        this.phone = phone;
     }
 
-    public String[] getNum() {
+    public String getNum() {
         return num;
     }
 

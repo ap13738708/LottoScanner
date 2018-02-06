@@ -10,6 +10,6 @@ import retrofit2.http.POST;
 
 public interface PostNumber {
 
-    @POST("users/add")
-    Call<Number> sendNum(@Body Number num);
+    @POST("insertlotto")
+    Call<String> sendNum(@Body Number num);
 }
