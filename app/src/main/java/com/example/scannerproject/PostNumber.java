@@ -11,5 +11,5 @@ import retrofit2.http.POST;
 public interface PostNumber {
 
     @POST("insertlotto")
-    Call<String> sendNum(@Body Number num);
+    Call<Void> sendNum(@Body Number num);
 }

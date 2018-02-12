@@ -7,7 +7,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer beapSound;
     String[] num;
     String all;
-    final String BASE_URL = "http://192.168.1.49:3000/";
+    final String BASE_URL = "http://119.59.123.156:2222/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +53,9 @@ public class MainActivity extends AppCompatActivity {
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                all = pseudoData();
+                Number number = new Number(name.getText().toString(), phone.getText().toString(), all, lottogroup.getText().toString());
+                sendNetworkRequest(number);
             }
         });
 
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
                     String[] array = all.split(",");
                     num_list = new ArrayList<>(Arrays.asList(array));
-                    Number number = new Number(all, phone.getText().toString(), lottogroup.getText().toString());
+                    Number number = new Number(name.getText().toString(), phone.getText().toString(), all, lottogroup.getText().toString());
                     sendNetworkRequest(number);
 
                     Intent intent = new Intent(MainActivity.this, TableActivity.class);
@@ -150,17 +151,17 @@ public class MainActivity extends AppCompatActivity {
         Retrofit retrofit = builder.build();
         //Get client & call object for request
         PostNumber client = retrofit.create(PostNumber.class);
-        Call<String> call = client.sendNum(num);
+        Call<Void> call = client.sendNum(num);
 
-        call.enqueue(new Callback<String>() {
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 Toast.makeText(MainActivity.this, "Send successful", Toast.LENGTH_SHORT).show();
-                Log.i("check", response.body());
+                //Log.i("check", response.body());
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "something went wrong :(", Toast.LENGTH_SHORT).show();
             }
         });

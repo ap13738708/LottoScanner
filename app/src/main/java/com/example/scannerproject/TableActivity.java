@@ -134,18 +134,19 @@ public class TableActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
 
-            case R.id.mybutton:
+            case R.id.btn_save:
                 saveToInternalStorage(getImage());
-
+                Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
 //                Intent intent = new Intent(this, Backgroud.class);
 //                ByteArrayOutputStream stream = new ByteArrayOutputStream();
 //                getImage().compress(Bitmap.CompressFormat.PNG, 100, stream);
 //                byte[] bytes = stream.toByteArray();
 //                intent.putExtra("BMP", bytes);
 //                startActivity(intent);
+            case R.id.btn_add :
+                Toast.makeText(getApplicationContext(), "Add", Toast.LENGTH_SHORT).show();
 
 
-                Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
