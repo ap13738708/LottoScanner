@@ -17,16 +17,15 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 
-import java.util.ArrayList;
-
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class Scanner extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     ZXingScannerView zXingScannerView;
     MediaPlayer beapSound;
-    ArrayList<String> num_list;
+//    ArrayList<String> num_list;
     String all = "";
+    String lottogroup;
     final private int REQUEST_CODE = 123;
 
 
@@ -37,11 +36,12 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
 //        setContentView(R.layout.activity_scanner);
 
         Intent intent = getIntent();
+        lottogroup  = intent.getStringExtra("lottogroup");
         zXingScannerView = new ZXingScannerView(getApplicationContext());
         setContentView(zXingScannerView);
 //        zXingScannerView.setAspectTolerance(0.5f);
         beapSound = MediaPlayer.create(this,R.raw.censor_beep_01);
-        num_list = new ArrayList< >();
+//        num_list = new ArrayList< >();
         zXingScannerView.setResultHandler(this);
         zXingScannerView.startCamera();
 
@@ -68,9 +68,9 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
     public void handleResult(Result result) {
         beapSound.start();
         Toast.makeText(getApplicationContext(),result.getText().substring(9,13),Toast.LENGTH_SHORT).show();
-        Log.i("result", result.getText());
+//        Log.i("result", result.getText());
         all += result.getText().substring(9,13) + ",";
-        num_list.add(result.getText().substring(9,13));
+//        num_list.add(result.getText().substring(9,13));
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -82,27 +82,35 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
     // create an action bar button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.mymenu, menu);
+        getMenuInflater().inflate(R.menu.mymenu_scan, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent= new Intent();
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
-            case android.R.id.home:
 
-            case R.id.btn_save :
-//                Toast.makeText(getApplicationContext(),"Hello",Toast.LENGTH_SHORT).show();
-                Intent intent= new Intent();
-                intent.putStringArrayListExtra("num_list", num_list);
-                if (all.length() != 0) {
-                    intent.putExtra("allNum", all.substring(0, all.length() - 1));
-                }
-                setResult(RESULT_OK, intent);
+            case android.R.id.home:
+                setResult(RESULT_OK);
                 finish();
                 return true;
+            case R.id.btn_save :
+//                intent.putStringArrayListExtra("num_list", num_list);
+                if (all.length() != 0) {
 
+                    String[] num = all.split(",");
+                    ArrangeNum obj = new ArrangeNum(num,lottogroup);
+                    intent.putExtra("allNum", all.substring(0, all.length() - 1));
+                    intent.putExtra("Obj", obj);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                    return true;
+                } else {
+                    Toast.makeText(getApplicationContext(), "No data to save", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -118,7 +126,7 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
                     setContentView(zXingScannerView);
 //                  zXingScannerView.setAspectTolerance(0.5f);
                     beapSound = MediaPlayer.create(this,R.raw.censor_beep_01);
-                    num_list = new ArrayList< >();
+//                    num_list = new ArrayList< >();
                     zXingScannerView.setResultHandler(this);
                     zXingScannerView.startCamera();
                     Log.i("path", "OK");

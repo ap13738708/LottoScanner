@@ -7,14 +7,19 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,17 +28,19 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
     Context mContext = this;
     EditText lottogroup, name, phone;
     Button send_data, test;
-    TextView textView;
     ArrayList<String> num_list;
     MediaPlayer beapSound;
-    String[] num;
     String all;
     final String BASE_URL = "http://119.59.123.156:2222/";
+
+    private List<ArrangeNum> tablesList = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private ArrangeNumAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +54,23 @@ public class MainActivity extends AppCompatActivity {
         lottogroup = findViewById(R.id.lottoGroup);
 
         send_data = findViewById(R.id.send_data);
-        textView = findViewById(R.id.textView);
         beapSound = MediaPlayer.create(this, R.raw.censor_beep_01);
+        setRecycleView();
+        ArrangeNum one = new ArrangeNum(pseudoData().split(","),"lotto1");
+        tablesList.add(one);
+        String[] testtest = {"1234","2345","4567"};
+        one = new ArrangeNum(pseudoData().split(","),"lotto2");
+        tablesList.add(one);
+        one = new ArrangeNum(testtest,"lotto3");
+        tablesList.add(one);
+        one = new ArrangeNum(pseudoData().split(","),"lotto4");
+        tablesList.add(one);
+        one = new ArrangeNum(pseudoData().split(","),"lotto5");
+        tablesList.add(one);
+        one = new ArrangeNum(pseudoData().split(","),"lotto6");
+        tablesList.add(one);
+        one = new ArrangeNum(pseudoData().split(","),"lotto7");
+        tablesList.add(one);
 
         test.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,11 +105,12 @@ public class MainActivity extends AppCompatActivity {
                     String[] array = all.split(",");
                     num_list = new ArrayList<>(Arrays.asList(array));
                     Number number = new Number(name.getText().toString(), phone.getText().toString(), all, lottogroup.getText().toString());
-                    sendNetworkRequest(number);
-
+//                    sendNetworkRequest(number);
+                    ArrangeNum fake = new ArrangeNum(array, lottogroup.getText().toString());
                     Intent intent = new Intent(MainActivity.this, TableActivity.class);
                     //intent.putStringArrayListExtra("ArrayList", num_list);
-                    intent.putStringArrayListExtra("ArrayList", num_list);
+//                    intent.putStringArrayListExtra("ArrayList", num_list);
+                    intent.putExtra("Obj", fake);
                     startActivity(intent);
                 }
             }
@@ -97,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
     public void scan(View view) {
         if (name.getText().toString().length() != 0 && lottogroup.getText().toString().length() != 0 && phone.toString().length() != 0) {
             Intent intent = new Intent(MainActivity.this.getApplicationContext(), Scanner.class);
+            intent.putExtra("lottogroup", lottogroup.getText().toString());
+            lottogroup.setText("");
             startActivityForResult(intent, 2404);
         } else {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -136,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == 2404 && data != null) {
-                num_list = data.getStringArrayListExtra("num_list");
+//                num_list = data.getStringArrayListExtra("num_list");
                 all = data.getStringExtra("allNum");
             }
         }
@@ -178,6 +203,44 @@ public class MainActivity extends AppCompatActivity {
                 "5888,6748,6928,8368," +
                 "9628,9838,0299,1689,2219,3139,3899,4379,4729,5889,5949,5969,6929,7309,7369,7459,8469,9509,9789";
         return data;
+    }
+
+    public void setRecycleView() {
+        recyclerView = findViewById(R.id.recycler_view);
+
+        mAdapter = new ArrangeNumAdapter(tablesList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(mAdapter);
+
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT,  this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                ArrangeNum arrangeNum = tablesList.get(position);
+                Intent intent = new Intent(MainActivity.this, TableActivity.class);
+                intent.putExtra("Obj", arrangeNum);
+                startActivity(intent);
+//                Toast.makeText(getApplicationContext(), arrangeNum.getLottogroup() + " is selected!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+    }
+
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        if (viewHolder instanceof ArrangeNumAdapter.MyViewHolder) {
+            // remove the item from recycler view
+            mAdapter.removeItem(viewHolder.getAdapterPosition());
+
+        }
     }
 }
 

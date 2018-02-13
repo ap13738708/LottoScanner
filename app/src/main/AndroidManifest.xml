@@ -28,8 +28,7 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".TableActivity"
-            android:label="Table"/>
-        <activity android:name=".Backgroud"></activity>
+            android:label="Table" />
     </application>
 
 </manifest>

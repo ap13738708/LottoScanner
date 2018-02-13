@@ -38,8 +38,10 @@ public class TableActivity extends AppCompatActivity {
     TextView tv1, tv2, tv3, tv4, tv5, tv6, tv7, tv8, tv9, tv10, tv11, tv12, tv13;
     Button btn_showMatched;
     ArrayList<String> num_list;
-    String[] num;
+    String[] num = null;
     ArrangeNum numSort;
+    ArrangeNum addArrangeNum;
+    ArrangeNum temp;
     final private int REQUEST_CODE = 123;
 
     @Override
@@ -48,10 +50,12 @@ public class TableActivity extends AppCompatActivity {
         setContentView(R.layout.activity_table);
 
         Intent intent = getIntent();
-        num_list = intent.getStringArrayListExtra("ArrayList");
-        num = num_list.toArray(new String[num_list.size()]);
-        numSort = new ArrangeNum(num);
-
+        addArrangeNum = (ArrangeNum) intent.getSerializableExtra("Obj");
+        setTitle(addArrangeNum.lottogroup);
+        if(num == null){
+            num = addArrangeNum.getAllArray();
+            numSort = new ArrangeNum(num, addArrangeNum.lottogroup);
+        }
         btn_showMatched = findViewById(R.id.btn_showMatched);
         tv1 = findViewById(R.id.tv1);
         tv2 = findViewById(R.id.tv2);
@@ -67,16 +71,7 @@ public class TableActivity extends AppCompatActivity {
 //        tv12 = findViewById(R.id.tv12);
 //        tv13 = findViewById(R.id.tv13);
 
-        tv1.setText(numSort.toString(numSort.zero));
-        tv2.setText(numSort.toString(numSort.one));
-        tv3.setText(numSort.toString(numSort.two));
-        tv4.setText(numSort.toString(numSort.three));
-        tv5.setText(numSort.toString(numSort.four));
-        tv6.setText(numSort.toString(numSort.five));
-        tv7.setText(numSort.toString(numSort.six));
-        tv8.setText(numSort.toString(numSort.seven));
-        tv9.setText(numSort.toString(numSort.eight));
-        tv10.setText(numSort.toString(numSort.nine));
+        setView();
 //        tv11.setText("1230\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470");
 //        tv12.setText("1230\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470");
 //        tv13.setText("1230\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470");
@@ -134,18 +129,17 @@ public class TableActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
 
-            case R.id.btn_save:
+            case R.id.btn_save: {
                 saveToInternalStorage(getImage());
                 Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(this, Backgroud.class);
-//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                getImage().compress(Bitmap.CompressFormat.PNG, 100, stream);
-//                byte[] bytes = stream.toByteArray();
-//                intent.putExtra("BMP", bytes);
-//                startActivity(intent);
-            case R.id.btn_add :
+                return true;
+            }
+            case R.id.btn_add : {
+                Intent intent = new Intent(TableActivity.this.getApplicationContext(), Scanner.class);
+                startActivityForResult(intent, 2405);
                 Toast.makeText(getApplicationContext(), "Add", Toast.LENGTH_SHORT).show();
-
+                return true;
+            }
 
         }
         return super.onOptionsItemSelected(item);
@@ -220,6 +214,30 @@ public class TableActivity extends AppCompatActivity {
         return result;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 2405 && data != null) {
+                temp = (ArrangeNum) data.getSerializableExtra("Obj");
+                numSort.add(temp.getAllArray());
+                setView();
+                Toast.makeText(getApplicationContext(),"Hello", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
+    public void setView() {
+        tv1.setText(numSort.toString(numSort.zero));
+        tv2.setText(numSort.toString(numSort.one));
+        tv3.setText(numSort.toString(numSort.two));
+        tv4.setText(numSort.toString(numSort.three));
+        tv5.setText(numSort.toString(numSort.four));
+        tv6.setText(numSort.toString(numSort.five));
+        tv7.setText(numSort.toString(numSort.six));
+        tv8.setText(numSort.toString(numSort.seven));
+        tv9.setText(numSort.toString(numSort.eight));
+        tv10.setText(numSort.toString(numSort.nine));
+    }
 }
 

@@ -1,13 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/btn_add"
-        android:icon="@drawable/icon_add"
-        android:title=""
-        app:showAsAction="always" />
+
     <item
         android:id="@+id/btn_save"
-        android:icon="@drawable/icon_saveimage"
+        android:icon="@drawable/icon_save"
         android:title=""
         app:showAsAction="always" />
+
 </menu>

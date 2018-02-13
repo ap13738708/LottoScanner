@@ -1,5 +1,6 @@
 package com.example.scannerproject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -7,8 +8,9 @@ import java.util.Collections;
  * Created by P on 1/29/2018.
  */
 
-public class ArrangeNum {
+public class ArrangeNum implements Serializable {
     String matched = "";
+    String lottogroup;
     ArrayList<String> zero = new ArrayList<String>();
     ArrayList<String> one = new ArrayList<String>();
     ArrayList<String> two = new ArrayList<String>();
@@ -20,8 +22,10 @@ public class ArrangeNum {
     ArrayList<String> eight = new ArrayList<String>();
     ArrayList<String> nine = new ArrayList<String>();
     ArrayList<String> all = new ArrayList<String>();
+    String[] arrayAll;
 
-    public ArrangeNum(String[] array) {
+    public ArrangeNum(String[] array, String name) {
+        this.lottogroup = name;
         add(array);
         sortAll();
     }
@@ -94,4 +98,13 @@ public class ArrangeNum {
         return all;
     }
 
+    public String[] getAllArray(){
+        arrayAll = all.toArray(new String[all.size()]);
+        return arrayAll;
+    }
+
+    public String getLottogroup(){
+        return this.lottogroup;
+    }
 }
+
