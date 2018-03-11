@@ -11,6 +11,7 @@ import java.util.Collections;
 public class ArrangeNum implements Serializable {
     String matched = "";
     String lottogroup;
+    String time;
     ArrayList<String> zero = new ArrayList<String>();
     ArrayList<String> one = new ArrayList<String>();
     ArrayList<String> two = new ArrayList<String>();
@@ -24,8 +25,9 @@ public class ArrangeNum implements Serializable {
     ArrayList<String> all = new ArrayList<String>();
     String[] arrayAll;
 
-    public ArrangeNum(String[] array, String name) {
+    public ArrangeNum(String[] array, String name, String time) {
         this.lottogroup = name;
+        this.time = time;
         add(array);
         sortAll();
     }
@@ -105,6 +107,12 @@ public class ArrangeNum implements Serializable {
 
     public String getLottogroup(){
         return this.lottogroup;
+    }
+
+    public String getTime(){ return  this.time; }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }
 

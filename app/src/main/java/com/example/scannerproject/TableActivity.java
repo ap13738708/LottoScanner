@@ -30,18 +30,16 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class TableActivity extends AppCompatActivity {
     Context mContext = this;
     TextView tv1, tv2, tv3, tv4, tv5, tv6, tv7, tv8, tv9, tv10, tv11, tv12, tv13;
     Button btn_showMatched;
-    ArrayList<String> num_list;
     String[] num = null;
     ArrangeNum numSort;
     ArrangeNum addArrangeNum;
-    ArrangeNum temp;
+    ArrangeNum fromScan;
     final private int REQUEST_CODE = 123;
 
     @Override
@@ -54,7 +52,7 @@ public class TableActivity extends AppCompatActivity {
         setTitle(addArrangeNum.lottogroup);
         if(num == null){
             num = addArrangeNum.getAllArray();
-            numSort = new ArrangeNum(num, addArrangeNum.lottogroup);
+            numSort = new ArrangeNum(num, addArrangeNum.lottogroup, addArrangeNum.getTime());
         }
         btn_showMatched = findViewById(R.id.btn_showMatched);
         tv1 = findViewById(R.id.tv1);
@@ -82,6 +80,8 @@ public class TableActivity extends AppCompatActivity {
                 String matched = numSort.matched;
                 if(matched == ""){
                     matched = "No Matched";
+                } else{
+                    matched = matched.substring(0,matched.length() - 1 );
                 }
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
 
@@ -90,7 +90,7 @@ public class TableActivity extends AppCompatActivity {
 
                 // set dialog message
                 alertDialogBuilder
-                        .setMessage(matched.substring(0,matched.length() - 1 ))
+                        .setMessage(matched)
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -126,6 +126,7 @@ public class TableActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int requestCode = 2405;
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
 
@@ -136,8 +137,11 @@ public class TableActivity extends AppCompatActivity {
             }
             case R.id.btn_add : {
                 Intent intent = new Intent(TableActivity.this.getApplicationContext(), Scanner.class);
-                startActivityForResult(intent, 2405);
-                Toast.makeText(getApplicationContext(), "Add", Toast.LENGTH_SHORT).show();
+                intent.putExtra("requestCode", requestCode);
+                intent.putExtra("Obj", numSort);
+                startActivity(intent);
+//                startActivityForResult(intent, requestCode);
+//                Toast.makeText(getApplicationContext(), "Add", Toast.LENGTH_SHORT).show();
                 return true;
             }
 
@@ -219,10 +223,11 @@ public class TableActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == 2405 && data != null) {
-                temp = (ArrangeNum) data.getSerializableExtra("Obj");
-                numSort.add(temp.getAllArray());
+                fromScan = (ArrangeNum) data.getSerializableExtra("Obj");
+                numSort.add(fromScan.getAllArray());
                 setView();
-                Toast.makeText(getApplicationContext(),"Hello", Toast.LENGTH_SHORT).show();
+                String test = data.getStringExtra("test");
+                Toast.makeText(getApplicationContext(),test,Toast.LENGTH_SHORT).show();
             }
         }
     }

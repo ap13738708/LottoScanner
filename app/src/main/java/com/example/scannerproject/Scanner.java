@@ -17,7 +17,16 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Scanner extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
@@ -25,9 +34,9 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
     MediaPlayer beapSound;
 //    ArrayList<String> num_list;
     String all = "";
-    String lottogroup;
     final private int REQUEST_CODE = 123;
-
+    Intent intent;
+    final String BASE_URL = "http://119.59.123.156:2222/";
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -35,13 +44,11 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_scanner);
 
-        Intent intent = getIntent();
-        lottogroup  = intent.getStringExtra("lottogroup");
+        intent = getIntent();
         zXingScannerView = new ZXingScannerView(getApplicationContext());
         setContentView(zXingScannerView);
 //        zXingScannerView.setAspectTolerance(0.5f);
         beapSound = MediaPlayer.create(this,R.raw.censor_beep_01);
-//        num_list = new ArrayList< >();
         zXingScannerView.setResultHandler(this);
         zXingScannerView.startCamera();
 
@@ -88,7 +95,8 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent= new Intent();
+        int requestCode = intent.getIntExtra("requestCode", -1);
+        String lottogroup = intent.getStringExtra("lottogroup");
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
 
@@ -97,16 +105,45 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
                 finish();
                 return true;
             case R.id.btn_save :
-//                intent.putStringArrayListExtra("num_list", num_list);
-                if (all.length() != 0) {
 
-                    String[] num = all.split(",");
-                    ArrangeNum obj = new ArrangeNum(num,lottogroup);
-                    intent.putExtra("allNum", all.substring(0, all.length() - 1));
-                    intent.putExtra("Obj", obj);
-                    setResult(RESULT_OK, intent);
-                    finish();
-                    return true;
+                if (all.length() != 0) {
+                    switch (requestCode){
+
+                        case 2404 : {
+                            String name = intent.getStringExtra("name");
+                            String phone = intent.getStringExtra("phone");
+                            Number number = new Number(name, phone, all.substring(0, all.length() - 1), lottogroup);
+                            sendNetworkRequest(number);
+
+                            String[] num = all.split(",");
+                            ArrangeNum obj = new ArrangeNum(num, lottogroup, getDate());
+                            intent.putExtra("allNum", all.substring(0, all.length() - 1));
+                            intent.putExtra("Obj", obj);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                            return true;
+                        }
+                        case 2405 : {
+                            //sendUpdateRequest();
+
+                            ArrangeNum numSort = (ArrangeNum) intent.getSerializableExtra("Obj");
+
+                            String[] num = all.split(",");
+                            ArrangeNum obj = new ArrangeNum(num, lottogroup, getDate());
+
+                            numSort.add(obj.getAllArray());
+                            numSort.setTime(obj.getTime());
+                            Intent intent1 = new Intent(Scanner.this.getApplicationContext(), MainActivity.class);
+                            intent1.putExtra("allNum", all.substring(0, all.length() - 1));
+                            intent1.putExtra("requestCode", 2405);
+                            intent1.putExtra("Obj", numSort);
+                            startActivity(intent1);
+//                            setResult(RESULT_OK, intent);
+                            finish();
+                            return true;
+                        }
+                    }
+
                 } else {
                     Toast.makeText(getApplicationContext(), "No data to save", Toast.LENGTH_SHORT).show();
                     return true;
@@ -139,6 +176,36 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
         }
     }
 
+    private void sendNetworkRequest(Number num) {
+        //Create retrofit instance
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create());
+
+        Retrofit retrofit = builder.build();
+        //Get client & call object for request
+        PostNumber client = retrofit.create(PostNumber.class);
+        Call<Void> call = client.sendNum(num);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Toast.makeText(Scanner.this, "Send successful", Toast.LENGTH_SHORT).show();
+                //Log.i("check", response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(Scanner.this, "something went wrong :(", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 
+    public String getDate() {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        String result = dateFormat.format(date);
+        return result;
+    }
 }
