@@ -84,7 +84,7 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
                         zXingScannerView.resumeCameraPreview(Scanner.this);
                         Log.i("tag", "This'll run 1 sec later");
                     }
-                }, 200);
+                }, 300);
     }
     // create an action bar button
     @Override
@@ -100,10 +100,10 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
 
-            case android.R.id.home:
-                setResult(RESULT_OK);
-                finish();
-                return true;
+//            case android.R.id.home:
+//                setResult(RESULT_OK);
+//                finish();
+//                return true;
             case R.id.btn_save :
 
                 if (all.length() != 0) {
@@ -116,7 +116,7 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
                             sendNetworkRequest(number);
 
                             String[] num = all.split(",");
-                            ArrangeNum obj = new ArrangeNum(num, lottogroup, getDate());
+                            ArrangeNum obj = new ArrangeNum(num, lottogroup, getDate(),name,phone);
                             intent.putExtra("allNum", all.substring(0, all.length() - 1));
                             intent.putExtra("Obj", obj);
                             setResult(RESULT_OK, intent);
@@ -125,11 +125,12 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
                         }
                         case 2405 : {
                             //sendUpdateRequest();
-
+                            String name = intent.getStringExtra("name");
+                            String phone = intent.getStringExtra("phone");
                             ArrangeNum numSort = (ArrangeNum) intent.getSerializableExtra("Obj");
 
                             String[] num = all.split(",");
-                            ArrangeNum obj = new ArrangeNum(num, lottogroup, getDate());
+                            ArrangeNum obj = new ArrangeNum(num, lottogroup, getDate(),name,phone);
 
                             numSort.add(obj.getAllArray());
                             numSort.setTime(obj.getTime());

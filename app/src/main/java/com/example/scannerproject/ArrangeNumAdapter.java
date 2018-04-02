@@ -37,7 +37,6 @@ public class ArrangeNumAdapter extends RecyclerView.Adapter<ArrangeNumAdapter.My
 
         public MyViewHolder2(View itemView) {
             super(itemView);
-            tick = itemView.findViewById(R.id.tick);
         }
     }
 
@@ -56,7 +55,7 @@ public class ArrangeNumAdapter extends RecyclerView.Adapter<ArrangeNumAdapter.My
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         ArrangeNum arrangeNum = tablesList.get(position);
-        holder.title.setText(arrangeNum.getLottogroup());
+        holder.title.setText(arrangeNum.getLottogroup() + "  " + arrangeNum.getSize() + "เล่ม");
         holder.time.setText("แก้ไขล่าสุด : " + arrangeNum.getTime());
 //        holder.year.setText(arrangeNum.getYear());
     }

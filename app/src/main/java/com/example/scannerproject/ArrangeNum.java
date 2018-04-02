@@ -12,6 +12,9 @@ public class ArrangeNum implements Serializable {
     String matched = "";
     String lottogroup;
     String time;
+    String phone;
+    String name;
+    int size = 0;
     ArrayList<String> zero = new ArrayList<String>();
     ArrayList<String> one = new ArrayList<String>();
     ArrayList<String> two = new ArrayList<String>();
@@ -24,9 +27,11 @@ public class ArrangeNum implements Serializable {
     ArrayList<String> nine = new ArrayList<String>();
     ArrayList<String> all = new ArrayList<String>();
     String[] arrayAll;
-
-    public ArrangeNum(String[] array, String name, String time) {
-        this.lottogroup = name;
+    ArrayList<String>[] arrayOfArrayList = new ArrayList[]{zero, one,two,three,four,five,six,seven,eight,nine};
+    public ArrangeNum(String[] array, String lottogroup, String time, String name, String phone) {
+        this.name = name;
+        this.phone = phone;
+        this.lottogroup = lottogroup;
         this.time = time;
         add(array);
         sortAll();
@@ -52,7 +57,7 @@ public class ArrangeNum implements Serializable {
                 matched += array[i] + ",";
             }
             all.add(array[i]);
-
+            size++;
             switch (array[i].substring(3)) {
                 case "0":
                     zero.add(array[i]);
@@ -114,5 +119,6 @@ public class ArrangeNum implements Serializable {
     public void setTime(String time) {
         this.time = time;
     }
+    public int getSize(){ return this.size; }
 }
 

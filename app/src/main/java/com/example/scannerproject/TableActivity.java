@@ -1,6 +1,7 @@
 package com.example.scannerproject;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,55 +25,43 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 public class TableActivity extends AppCompatActivity {
     Context mContext = this;
-    TextView tv1, tv2, tv3, tv4, tv5, tv6, tv7, tv8, tv9, tv10, tv11, tv12, tv13;
     Button btn_showMatched;
+    TextView name;
     String[] num = null;
     ArrangeNum numSort;
     ArrangeNum addArrangeNum;
     ArrangeNum fromScan;
     final private int REQUEST_CODE = 123;
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table);
-
+        name = findViewById(R.id.name);
         Intent intent = getIntent();
         addArrangeNum = (ArrangeNum) intent.getSerializableExtra("Obj");
         setTitle(addArrangeNum.lottogroup);
         if(num == null){
             num = addArrangeNum.getAllArray();
-            numSort = new ArrangeNum(num, addArrangeNum.lottogroup, addArrangeNum.getTime());
+            numSort = new ArrangeNum(num, addArrangeNum.lottogroup, addArrangeNum.getTime(),addArrangeNum.name,addArrangeNum.phone);
         }
         btn_showMatched = findViewById(R.id.btn_showMatched);
-        tv1 = findViewById(R.id.tv1);
-        tv2 = findViewById(R.id.tv2);
-        tv3 = findViewById(R.id.tv3);
-        tv4 = findViewById(R.id.tv4);
-        tv5 = findViewById(R.id.tv5);
-        tv6 = findViewById(R.id.tv6);
-        tv7 = findViewById(R.id.tv7);
-        tv8 = findViewById(R.id.tv8);
-        tv9 = findViewById(R.id.tv9);
-        tv10 = findViewById(R.id.tv10);
-//        tv11 = findViewById(R.id.tv11);
-//        tv12 = findViewById(R.id.tv12);
-//        tv13 = findViewById(R.id.tv13);
+
 
         setView();
-//        tv11.setText("1230\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470");
-//        tv12.setText("1230\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470");
-//        tv13.setText("1230\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470\n2340\n3450\n3450\n3470\n1230\n2340\n3450\n3450\n3470");
 
         btn_showMatched.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,16 +222,57 @@ public class TableActivity extends AppCompatActivity {
     }
 
     public void setView() {
-        tv1.setText(numSort.toString(numSort.zero));
-        tv2.setText(numSort.toString(numSort.one));
-        tv3.setText(numSort.toString(numSort.two));
-        tv4.setText(numSort.toString(numSort.three));
-        tv5.setText(numSort.toString(numSort.four));
-        tv6.setText(numSort.toString(numSort.five));
-        tv7.setText(numSort.toString(numSort.six));
-        tv8.setText(numSort.toString(numSort.seven));
-        tv9.setText(numSort.toString(numSort.eight));
-        tv10.setText(numSort.toString(numSort.nine));
+
+        TableRow tableRow =  findViewById(R.id.row1);
+        name.setText(numSort.name + "   " + numSort.phone + "  " + getDate2());
+//        TableLayout table = findViewById(R.id.table);
+//        TextView name = new TextView(this);
+//        name.setText(numSort.name + "  " + numSort.phone );
+//
+//        name.setPadding(60,0,0,0);
+//        name.setLayoutParams(new TableRow.LayoutParams(
+//                TableRow.LayoutParams.FILL_PARENT,
+//                TableRow.LayoutParams.WRAP_CONTENT));
+//        table.addView(name);
+
+        String[] num;
+        for(int i=0;i<10;i++) {
+            int count = 0;
+            num = numSort.arrayOfArrayList[i].toArray(new String[numSort.arrayOfArrayList[i].size()]);
+            Log.i("check", String.valueOf(num.length));
+            Log.i("check", Arrays.toString(num));
+            String numText = "";
+            while(num.length > count){
+                TextView text = new TextView(this);
+                text.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+                for (int j = 0 ; j < 35 ; j++){
+                    if(num.length == count) break;
+                    Log.i("check",num[count] + " " + count);
+                    numText += num[count] + "\n";
+                    count++;
+
+                }
+                text.setText(numText);
+                numText = "";
+                text.setPadding(10,0,0,5);
+                tableRow.addView(text);
+            }
+        }
+
+//        TextView valueTV = new TextView(this);
+//        valueTV.setText("Hello");
+//        valueTV.setTextSize(TypedValue.COMPLEX_UNIT_SP,14);
+//        valueTV.setLayoutParams(new TableRow.LayoutParams(
+//                TableRow.LayoutParams.FILL_PARENT,
+//                TableRow.LayoutParams.WRAP_CONTENT));
+//        tableRow.addView(valueTV);
+    }
+
+    public String getDate2() {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        String result = dateFormat.format(date);
+        return result;
     }
 }
 

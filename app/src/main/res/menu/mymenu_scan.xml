@@ -4,8 +4,7 @@
 
     <item
         android:id="@+id/btn_save"
-        android:icon="@drawable/icon_save"
-        android:title=""
+        android:title="SAVE"
         app:showAsAction="always" />
-
+    <!--android:icon="@drawable/icon_save"-->
 </menu>
