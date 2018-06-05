@@ -32,13 +32,13 @@ public class ArrangeNumAdapter extends RecyclerView.Adapter<ArrangeNumAdapter.My
         }
     }
 
-    public class MyViewHolder2 extends RecyclerView.ViewHolder {
-        public RadioButton tick;
-
-        public MyViewHolder2(View itemView) {
-            super(itemView);
-        }
-    }
+//    public class MyViewHolder2 extends RecyclerView.ViewHolder {
+//        public RadioButton tick;
+//
+//        public MyViewHolder2(View itemView) {
+//            super(itemView);
+//        }
+//    }
 
 
     public ArrangeNumAdapter(List<ArrangeNum> tablesList) {

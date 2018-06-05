@@ -2,111 +2,116 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context=".TableActivity">
 
     <Button
         android:id="@+id/btn_showMatched"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="matched number" />
-
-    <HorizontalScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:stretchColumns="1"
-    android:fillViewport="true"
-    android:id="@+id/scrollView">
-
-
-    <TableLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id="@+id/table">
-
-        <TextView
-            android:id="@+id/name"
-            android:layout_column="1"
-            android:paddingLeft="50dp"
-            android:textSize="14sp" />
-
-        <TableRow android:id="@+id/row1">
-
-            <!--<TextView-->
-                <!--android:id="@+id/tv1"-->
-                <!--android:layout_column="1"-->
-                <!--android:padding="3dip"-->
-                <!--android:text="...0..."-->
-                <!--android:textSize="14sp" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/tv2"-->
-                <!--android:layout_column="1"-->
-                <!--android:padding="3dip"-->
-                <!--android:text="|..1..."-->
-                <!--android:textSize="14sp" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/tv3"-->
-                <!--android:layout_column="1"-->
-                <!--android:padding="3dip"-->
-                <!--android:text="|..2..."-->
-                <!--android:textSize="14sp" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/tv4"-->
-                <!--android:layout_column="1"-->
-                <!--android:padding="3dip"-->
-                <!--android:text="|..3..."-->
-                <!--android:textSize="14sp" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/tv5"-->
-                <!--android:layout_column="1"-->
-                <!--android:padding="3dip"-->
-                <!--android:text="|..4..."-->
-                <!--android:textSize="14sp" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/tv6"-->
-                <!--android:layout_column="1"-->
-                <!--android:padding="3dip"-->
-                <!--android:text="|..5..."-->
-                <!--android:textSize="14sp" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/tv7"-->
-                <!--android:layout_column="1"-->
-                <!--android:padding="3dip"-->
-                <!--android:text="|..6..."-->
-                <!--android:textSize="14sp" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/tv8"-->
-                <!--android:layout_column="1"-->
-                <!--android:padding="3dip"-->
-                <!--android:text="|..7..."-->
-                <!--android:textSize="14sp" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/tv9"-->
-                <!--android:layout_column="1"-->
-                <!--android:padding="3dip"-->
-                <!--android:text="|..8..."-->
-                <!--android:textSize="14sp" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/tv10"-->
-                <!--android:layout_column="1"-->
-                <!--android:padding="3dip"-->
-                <!--android:text="|..9..."-->
-                <!--android:textSize="14sp" />-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:stretchColumns="1"
+            android:fillViewport="true"
+            android:id="@+id/scrollView">
 
 
-        </TableRow>
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/table">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_column="1"
+                    android:paddingLeft="50dp"
+                    android:textSize="14sp" />
+
+                <TableRow android:id="@+id/row1">
+
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv1"-->
+                    <!--android:layout_column="1"-->
+                    <!--android:padding="3dip"-->
+                    <!--android:text="...0..."-->
+                    <!--android:textSize="14sp" />-->
+
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv2"-->
+                    <!--android:layout_column="1"-->
+                    <!--android:padding="3dip"-->
+                    <!--android:text="|..1..."-->
+                    <!--android:textSize="14sp" />-->
+
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv3"-->
+                    <!--android:layout_column="1"-->
+                    <!--android:padding="3dip"-->
+                    <!--android:text="|..2..."-->
+                    <!--android:textSize="14sp" />-->
+
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv4"-->
+                    <!--android:layout_column="1"-->
+                    <!--android:padding="3dip"-->
+                    <!--android:text="|..3..."-->
+                    <!--android:textSize="14sp" />-->
+
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv5"-->
+                    <!--android:layout_column="1"-->
+                    <!--android:padding="3dip"-->
+                    <!--android:text="|..4..."-->
+                    <!--android:textSize="14sp" />-->
+
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv6"-->
+                    <!--android:layout_column="1"-->
+                    <!--android:padding="3dip"-->
+                    <!--android:text="|..5..."-->
+                    <!--android:textSize="14sp" />-->
+
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv7"-->
+                    <!--android:layout_column="1"-->
+                    <!--android:padding="3dip"-->
+                    <!--android:text="|..6..."-->
+                    <!--android:textSize="14sp" />-->
+
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv8"-->
+                    <!--android:layout_column="1"-->
+                    <!--android:padding="3dip"-->
+                    <!--android:text="|..7..."-->
+                    <!--android:textSize="14sp" />-->
+
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv9"-->
+                    <!--android:layout_column="1"-->
+                    <!--android:padding="3dip"-->
+                    <!--android:text="|..8..."-->
+                    <!--android:textSize="14sp" />-->
+
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv10"-->
+                    <!--android:layout_column="1"-->
+                    <!--android:padding="3dip"-->
+                    <!--android:text="|..9..."-->
+                    <!--android:textSize="14sp" />-->
 
 
-    </TableLayout>
+                </TableRow>
 
-    </HorizontalScrollView>
 
+            </TableLayout>
+
+        </HorizontalScrollView>
+    </ScrollView>
 </LinearLayout>

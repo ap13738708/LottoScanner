@@ -24,7 +24,10 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -38,8 +41,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
 
     Context mContext = this;
     EditText lottogroup, name, phone;
-    Button type_data ;
-    ArrayList<String> num_list;
+//    Button type_data ;
+//    ArrayList<String> num_list;
     MediaPlayer beapSound;
     String all;
 
@@ -70,17 +73,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
 
         intent = getIntent();
         int requestCode = intent.getIntExtra("requestCode", -1);
-        if(requestCode == 2405) {
+        if(requestCode == 2405 || requestCode == 2406) {
             addNewDeleteOld();
         }
 
-//        ArrangeNum one = new ArrangeNum(pseudoData().split(","),"lotto1");
-//        tablesList.add(one);
-//        String[] testtest = {"1234","2345","4567"};
-//        one = new ArrangeNum(pseudoData().split(","),"lotto2");
-//        tablesList.add(one);
-//        one = new ArrangeNum(testtest,"lotto3");
-//        tablesList.add(one);
+//        ArrangeNum fake = new ArrangeNum(generateNum(500),"500", getDate(), "fake", "0000000000");
+//        tablesList.add(fake);
+//
+//        ArrangeNum fake1 = new ArrangeNum(generateNum(800),"800", getDate(), "fake1", "0000000000");
+//        tablesList.add(fake1);
 
 //        phone.addTextChangedListener(new TextWatcher() {
 //            int countText = 0;
@@ -192,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             for (ArrangeNum a : tablesList){
                     title = a.lottogroup;
                 if(title.equals(lottoName)){
-                    alertBox("ลองใหม่อีกครั้ง","ชื่อชุดที่ซ้ำ กรุณาใช้ชื่ออื่น");
+                    alertBox("ลองใหม่อีกครั้ง","ชื่อลอตที่ซ้ำ กรุณาใช้ชื่ออื่น");
                     requestCode = -1;
                     break;
                 }
@@ -226,7 +227,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
                 all = data.getStringExtra("allNum");
                 fromScan =  (ArrangeNum) data.getSerializableExtra("Obj");
                 tablesList.add(fromScan);
-                //Toast.makeText(getApplicationContext(),"Hello from 2404",Toast.LENGTH_SHORT).show();
+                setRecycleView();
+                //Toast.makeText(getAp plicationContext(),"Hello from 2404",Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -387,6 +389,30 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
 
         // show it
         alertDialog.show();
+    }
+
+    public String[] generateNum(int x){
+        ArrayList<String> randomNum = new ArrayList<>();
+        int num;
+        String value;
+        for (int i =0 ; i < x ; i++){
+            num = (int) (Math.random() * 9999);
+            value = String.valueOf(num);
+            while(value.length() != 4) {
+                value = 0 + value;
+            }
+            randomNum.add(value);
+        }
+        String[] test = new String[randomNum.size()];
+        test = randomNum.toArray(test);
+        return test;
+    }
+
+    public String getDate() {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        String result = dateFormat.format(date);
+        return result;
     }
 }
 

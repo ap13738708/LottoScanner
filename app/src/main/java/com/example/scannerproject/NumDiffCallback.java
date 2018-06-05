@@ -40,7 +40,7 @@ public class NumDiffCallback extends DiffUtil.Callback {
         final ArrangeNum oldNum = mOldEmployeeList.get(oldItemPosition);
         final ArrangeNum newNum = mNewEmployeeList.get(newItemPosition);
 
-        return oldNum.getAllArray().equals(newNum.getAllArray());
+        return oldNum.all.equals(newNum.all);
     }
 
     @Nullable

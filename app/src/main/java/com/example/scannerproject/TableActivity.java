@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,7 +44,6 @@ public class TableActivity extends AppCompatActivity {
     String[] num = null;
     ArrangeNum numSort;
     ArrangeNum addArrangeNum;
-    ArrangeNum fromScan;
     final private int REQUEST_CODE = 123;
 
     @SuppressLint("ResourceType")
@@ -115,7 +116,7 @@ public class TableActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int requestCode = 2405;
+        int requestCode;
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
 
@@ -125,12 +126,23 @@ public class TableActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.btn_add : {
+                requestCode  = 2405;
                 Intent intent = new Intent(TableActivity.this.getApplicationContext(), Scanner.class);
                 intent.putExtra("requestCode", requestCode);
                 intent.putExtra("Obj", numSort);
                 startActivity(intent);
 //                startActivityForResult(intent, requestCode);
 //                Toast.makeText(getApplicationContext(), "Add", Toast.LENGTH_SHORT).show();
+                finish();
+                return true;
+            }
+            case R.id.btn_minus : {
+                requestCode  = 2406;
+                Intent intent = new Intent(TableActivity.this.getApplicationContext(), RemoveNumActivity.class);
+                intent.putExtra("requestCode", requestCode);
+                intent.putExtra("Obj", numSort);
+                startActivity(intent);
+                finish();
                 return true;
             }
 
@@ -206,25 +218,26 @@ public class TableActivity extends AppCompatActivity {
         String result = dateFormat.format(date);
         return result;
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == 2405 && data != null) {
-                fromScan = (ArrangeNum) data.getSerializableExtra("Obj");
-                numSort.add(fromScan.getAllArray());
-                setView();
-                String test = data.getStringExtra("test");
-                Toast.makeText(getApplicationContext(),test,Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode == RESULT_OK) {
+//            if (requestCode == 2405 && data != null) {
+//                fromScan = (ArrangeNum) data.getSerializableExtra("Obj");
+//                numSort.add(fromScan.getAllArray());
+//                setView();
+//                String test = data.getStringExtra("test");
+//                Toast.makeText(getApplicationContext(),test,Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
+//
 
     public void setView() {
-
         TableRow tableRow =  findViewById(R.id.row1);
-        name.setText(numSort.name + "   " + numSort.phone + "  " + getDate2());
+        name.setText(numSort.name + "   " + numSort.phone + "   " + getDate2() + "  "+numSort.lottogroup);
+        name.setTypeface(null, Typeface.BOLD);
+        name.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
 //        TableLayout table = findViewById(R.id.table);
 //        TextView name = new TextView(this);
 //        name.setText(numSort.name + "  " + numSort.phone );
@@ -245,7 +258,7 @@ public class TableActivity extends AppCompatActivity {
             while(num.length > count){
                 TextView text = new TextView(this);
                 text.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-                for (int j = 0 ; j < 35 ; j++){
+                for (int j = 0 ; j < 40; j++){
                     if(num.length == count) break;
                     Log.i("check",num[count] + " " + count);
                     numText += num[count] + "\n";

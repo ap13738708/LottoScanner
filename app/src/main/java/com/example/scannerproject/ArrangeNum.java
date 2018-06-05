@@ -1,5 +1,7 @@
 package com.example.scannerproject;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +36,6 @@ public class ArrangeNum implements Serializable {
         this.lottogroup = lottogroup;
         this.time = time;
         add(array);
-        sortAll();
     }
 
     public void sortAll() {
@@ -54,7 +55,7 @@ public class ArrangeNum implements Serializable {
         int i;
         for (i = 0; i < array.length; i++) {
             if(all.contains(array[i])){
-                matched += array[i] + ",";
+                matched += array[i] + "-";
             }
             all.add(array[i]);
             size++;
@@ -105,11 +106,6 @@ public class ArrangeNum implements Serializable {
         return all;
     }
 
-    public String[] getAllArray(){
-        arrayAll = all.toArray(new String[all.size()]);
-        return arrayAll;
-    }
-
     public String getLottogroup(){
         return this.lottogroup;
     }
@@ -120,5 +116,22 @@ public class ArrangeNum implements Serializable {
         this.time = time;
     }
     public int getSize(){ return this.size; }
+
+    public void removeNum(String[] array) throws Exception{
+        for (String num : array){
+            int index = Integer.parseInt(num.substring(3));
+            if(arrayOfArrayList[index].contains(num)){
+                arrayOfArrayList[index].remove(num);
+                all.remove(num);
+                size--;
+            }
+        }
+    }
+
+    public String[] getAllArray(){
+        arrayAll = all.toArray(new String[all.size()]);
+        return arrayAll;
+    }
+
 }
 

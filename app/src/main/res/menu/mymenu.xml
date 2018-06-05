@@ -1,5 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/btn_minus"
+        android:icon="@drawable/icon_minus"
+        android:title=""
+        app:showAsAction="always" />
     <item
         android:id="@+id/btn_add"
         android:icon="@drawable/icon_add"
@@ -10,4 +16,6 @@
         android:icon="@drawable/icon_saveimage"
         android:title=""
         app:showAsAction="always" />
+
+
 </menu>

@@ -9,17 +9,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.IntentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import retrofit2.Call;
@@ -28,8 +32,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+
 public class Scanner extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
+    public static final List<BarcodeFormat> ALL_FORMATS = new ArrayList();
     ZXingScannerView zXingScannerView;
     MediaPlayer beapSound;
 //    ArrayList<String> num_list;
@@ -43,12 +50,13 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_scanner);
-
+        ALL_FORMATS.add(BarcodeFormat.DATA_MATRIX);
         intent = getIntent();
         zXingScannerView = new ZXingScannerView(getApplicationContext());
         setContentView(zXingScannerView);
 //        zXingScannerView.setAspectTolerance(0.5f);
         beapSound = MediaPlayer.create(this,R.raw.censor_beep_01);
+        zXingScannerView.setFormats(ALL_FORMATS);
         zXingScannerView.setResultHandler(this);
         zXingScannerView.startCamera();
 
@@ -84,7 +92,7 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
                         zXingScannerView.resumeCameraPreview(Scanner.this);
                         Log.i("tag", "This'll run 1 sec later");
                     }
-                }, 300);
+                }, 500);
     }
     // create an action bar button
     @Override
@@ -112,8 +120,8 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
                         case 2404 : {
                             String name = intent.getStringExtra("name");
                             String phone = intent.getStringExtra("phone");
-                            Number number = new Number(name, phone, all.substring(0, all.length() - 1), lottogroup);
-                            sendNetworkRequest(number);
+//                            Number number = new Number(name, phone, all.substring(0, all.length() - 1), lottogroup);
+//                            sendNetworkRequest(number);
 
                             String[] num = all.split(",");
                             ArrangeNum obj = new ArrangeNum(num, lottogroup, getDate(),name,phone);
@@ -125,19 +133,20 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
                         }
                         case 2405 : {
                             //sendUpdateRequest();
-                            String name = intent.getStringExtra("name");
-                            String phone = intent.getStringExtra("phone");
+//                            String name = intent.getStringExtra("name");
+//                            String phone = intent.getStringExtra("phone");
                             ArrangeNum numSort = (ArrangeNum) intent.getSerializableExtra("Obj");
 
                             String[] num = all.split(",");
-                            ArrangeNum obj = new ArrangeNum(num, lottogroup, getDate(),name,phone);
+//                            ArrangeNum obj = new ArrangeNum(num, lottogroup, getDate(),name,phone);
 
-                            numSort.add(obj.getAllArray());
-                            numSort.setTime(obj.getTime());
+                            numSort.add(num);
+                            numSort.setTime(getDate());
                             Intent intent1 = new Intent(Scanner.this.getApplicationContext(), MainActivity.class);
-                            intent1.putExtra("allNum", all.substring(0, all.length() - 1));
+//                            intent1.putExtra("allNum", all.substring(0, all.length() - 1));
                             intent1.putExtra("requestCode", 2405);
                             intent1.putExtra("Obj", numSort);
+                            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK );
                             startActivity(intent1);
 //                            setResult(RESULT_OK, intent);
                             finish();
