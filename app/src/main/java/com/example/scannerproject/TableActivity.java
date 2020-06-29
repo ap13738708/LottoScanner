@@ -2,6 +2,7 @@ package com.example.scannerproject;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +19,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -31,11 +33,23 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.scannerproject.di.ApiService;
+import com.example.scannerproject.di.ResponseDao;
+import com.google.gson.Gson;
+
 import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class TableActivity extends AppCompatActivity {
     Context mContext = this;
@@ -45,6 +59,8 @@ public class TableActivity extends AppCompatActivity {
     ArrangeNum numSort;
     ArrangeNum addArrangeNum;
     final private int REQUEST_CODE = 123;
+
+
 
     @SuppressLint("ResourceType")
     @Override
@@ -89,13 +105,6 @@ public class TableActivity extends AppCompatActivity {
                                 dialog.cancel();
                             }
                         });
-//                    .setNegativeButton("No",new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            // if this button is clicked, just close
-//                            // the dialog box and do nothing
-//                            dialog.cancel();
-//                        }
-//                    });
 
                 // create alert dialog
                 AlertDialog alertDialog = alertDialogBuilder.create();
@@ -122,6 +131,8 @@ public class TableActivity extends AppCompatActivity {
 
             case R.id.btn_save: {
                 saveToInternalStorage(getImage());
+//                Number num = new Number(numSort.name, numSort.phone)
+//                sendNetworkRequest();
                 Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
                 return true;
             }
@@ -145,6 +156,9 @@ public class TableActivity extends AppCompatActivity {
                 finish();
                 return true;
             }
+//            case R.id.btn_send_data : {
+//                sendToLottoPool(convertArrangeNumToData(numSort));
+//            }
 
         }
         return super.onOptionsItemSelected(item);
@@ -181,7 +195,7 @@ public class TableActivity extends AppCompatActivity {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmapImage.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
         if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Log.i("test", "Permission is granted");
+//            Log.i("test", "Permission is granted");
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
             return;
         }
@@ -202,7 +216,7 @@ public class TableActivity extends AppCompatActivity {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //Permission Granted
                     saveToInternalStorage(getImage());
-                    Log.i("path", "OK");
+//                    Log.i("path", "OK");
                 } else {
                     Toast.makeText(TableActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
                 }
@@ -218,20 +232,7 @@ public class TableActivity extends AppCompatActivity {
         String result = dateFormat.format(date);
         return result;
     }
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode == RESULT_OK) {
-//            if (requestCode == 2405 && data != null) {
-//                fromScan = (ArrangeNum) data.getSerializableExtra("Obj");
-//                numSort.add(fromScan.getAllArray());
-//                setView();
-//                String test = data.getStringExtra("test");
-//                Toast.makeText(getApplicationContext(),test,Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
-//
+
 
     public void setView() {
         TableRow tableRow =  findViewById(R.id.row1);
@@ -252,22 +253,24 @@ public class TableActivity extends AppCompatActivity {
         for(int i=0;i<10;i++) {
             int count = 0;
             num = numSort.arrayOfArrayList[i].toArray(new String[numSort.arrayOfArrayList[i].size()]);
-            Log.i("check", String.valueOf(num.length));
-            Log.i("check", Arrays.toString(num));
+//            Log.i("check", String.valueOf(num.length));
+//            Log.i("check", Arrays.toString(num));
             String numText = "";
             while(num.length > count){
                 TextView text = new TextView(this);
                 text.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
                 for (int j = 0 ; j < 40; j++){
                     if(num.length == count) break;
-                    Log.i("check",num[count] + " " + count);
+//                    Log.i("check",num[count] + " " + count);
                     numText += num[count] + "\n";
                     count++;
 
                 }
                 text.setText(numText);
+                text.setTypeface(Typeface.create(ResourcesCompat.getFont(this,R.font.adamina), Typeface.NORMAL));
+                text.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
                 numText = "";
-                text.setPadding(10,0,0,5);
+                text.setPadding(10,0,25,5);
                 tableRow.addView(text);
             }
         }
@@ -286,6 +289,45 @@ public class TableActivity extends AppCompatActivity {
         Date date = new Date();
         String result = dateFormat.format(date);
         return result;
+    }
+
+    private void sendToLottoPool(ArrayList<Data> data) {
+        DataList temp = new DataList(data);
+        Call<ResponseDao> call = ApiService.httpManager().sendData(temp);
+
+        call.enqueue(new Callback<ResponseDao>() {
+            @Override
+            public void onResponse(Call<ResponseDao> call, Response<ResponseDao> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(TableActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e("response", "Not successful");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseDao> call, Throwable t) {
+                Log.e("onFailure", t.toString());
+                Toast.makeText(TableActivity.this, "something went wrong :(", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public ArrayList<Data> convertArrangeNumToData(ArrangeNum arrangeNum) {
+        ArrayList<Data> data = new ArrayList<>();
+        ArrayList<String> numList;
+        for (int i = 0 ; i < 10 ; i++) {
+            numList = arrangeNum.arrayOfArrayList[i];
+            for (int j = 0 ; j < numList.size() ; j++) {
+                Data temp = new Data(numList.get(j), 1);
+                if (j > 0 && (numList.get(j - 1).equals(numList.get(j)))) {
+                    data.get(data.size() - 1).incrementAmount();
+                } else {
+                    data.add(temp);
+                }
+            }
+        }
+        return data;
     }
 }
 

@@ -10,8 +10,8 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="lottoScan"
+        android:icon="@drawable/lotto_icon"
+        android:label="lottoScan2"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -29,6 +29,12 @@
             android:name=".TableActivity"
             android:label="Table" />
         <activity android:name=".RemoveNumActivity" />
+        <activity android:name=".app.SplashActivity">
+
+        </activity>
+        <activity android:name=".login.LoginActivity" />
+        <activity android:name=".signup.SignUpActivity" />
+        <activity android:name=".matched.MatchedActivity"></activity>
     </application>
 
 </manifest>

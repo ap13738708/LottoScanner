@@ -1,6 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!--<item-->
+        <!--android:id="@+id/btn_send_data"-->
+        <!--android:icon="@drawable/lotto_icon"-->
+        <!--android:title=""-->
+        <!--app:showAsAction="always" />-->
+
     <item
         android:id="@+id/btn_minus"
         android:icon="@drawable/icon_minus"

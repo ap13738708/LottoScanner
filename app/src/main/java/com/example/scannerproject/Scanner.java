@@ -132,7 +132,6 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
                             return true;
                         }
                         case 2405 : {
-                            //sendUpdateRequest();
 //                            String name = intent.getStringExtra("name");
 //                            String phone = intent.getStringExtra("phone");
                             ArrangeNum numSort = (ArrangeNum) intent.getSerializableExtra("Obj");
@@ -184,31 +183,6 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-    }
-
-    private void sendNetworkRequest(Number num) {
-        //Create retrofit instance
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create());
-
-        Retrofit retrofit = builder.build();
-        //Get client & call object for request
-        PostNumber client = retrofit.create(PostNumber.class);
-        Call<Void> call = client.sendNum(num);
-
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                Toast.makeText(Scanner.this, "Send successful", Toast.LENGTH_SHORT).show();
-                //Log.i("check", response.body());
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(Scanner.this, "something went wrong :(", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 

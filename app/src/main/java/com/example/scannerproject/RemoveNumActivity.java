@@ -22,7 +22,6 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
 public class RemoveNumActivity extends AppCompatActivity {
 
-    Context mContext = this;
     Button btn_showMatched;
     TextView name;
     ArrangeNum numSort;
@@ -57,7 +56,6 @@ public class RemoveNumActivity extends AppCompatActivity {
                     }
                 }
                 try {
-                    Log.i("checkRemove", Arrays.toString(array));
                     numSort.removeNum(array);
                     Intent intent1 = new Intent(RemoveNumActivity.this, MainActivity.class);
                     intent1.putExtra("requestCode", requestCode);

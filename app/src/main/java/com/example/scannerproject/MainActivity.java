@@ -1,10 +1,8 @@
 package com.example.scannerproject;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,8 +16,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.example.scannerproject.di.Injection;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -27,34 +26,25 @@ import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
-    Context mContext = this;
     EditText lottogroup, name, phone;
-//    Button type_data ;
-//    ArrayList<String> num_list;
-    MediaPlayer beapSound;
+    Button btnMatched;
     String all;
-
     ArrangeNum fromScan = null;
+    private int matchAmount = 0;
 
-    final String BASE_URL = "http://119.59.123.156:2222/";
-//    final String BASE_URL = "http://192.168.43.189:2222/";
 
     private List<ArrangeNum> tablesList = new ArrayList<>();
     private RecyclerView recyclerView;
     private ArrangeNumAdapter mAdapter;
     Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,15 +55,24 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         phone = findViewById(R.id.phone);
         name = findViewById(R.id.name);
         lottogroup = findViewById(R.id.lottoGroup);
+        btnMatched = findViewById(R.id.btnMatched);
 
-//        type_data = findViewById(R.id.type_data);
-        beapSound = MediaPlayer.create(this, R.raw.censor_beep_01);
+        btnMatched.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String x = matchedAll();
+                alertBox("เลขที่ตรงทั้งหมด " + matchAmount , x);
+            }
+        });
+
         initial();
         setRecycleView();
 
+
+
         intent = getIntent();
         int requestCode = intent.getIntExtra("requestCode", -1);
-        if(requestCode == 2405 || requestCode == 2406) {
+        if (requestCode == 2405 || requestCode == 2406) {
             addNewDeleteOld();
         }
 
@@ -83,106 +82,71 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
 //        ArrangeNum fake1 = new ArrangeNum(generateNum(800),"800", getDate(), "fake1", "0000000000");
 //        tablesList.add(fake1);
 
-//        phone.addTextChangedListener(new TextWatcher() {
-//            int countText = 0;
-//            int pastCount;
-//            boolean check = true;
-//            int pastDelete;
-//
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int arg1, int arg2, int arg3) {
-//                pastCount = s.length();
-//                pastDelete = (int) s.charAt(s.length() - 1 );
-//                Log.d("TAG", "beforeTextChanged " + ", " + countText + "| pastCount :" + pastCount);
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//
-//                Log.d("TAG", "onTextChanged " + ", " + countText + "| Current count :" + s.length());
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                if(pastCount > s.length()){
-//                    if(countText != 0)countText--;
-//                    if(pastDelete == 45)
-//                } else {
-//                    countText++;
-//                }
-//               if(countText == 4 && check){
-//                   phone.append("-");
-//                   countText = 0;
-//               } else {
-//
-//               }
-//
-//                Log.d("TAG", "afterTextChanged "+ ", " + countText + "| count :" + s.length());
-//            }
-//        });
-
-
-//        type_data.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                all = pseudoData();
-//                if (all == null) {
-//                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-//
-//                    alertDialogBuilder.setTitle("Error");
-//
-//                    alertDialogBuilder
-//                            .setMessage("No Data")
-//                            .setCancelable(false)
-//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog, int id) {
-//                                    dialog.cancel();
-//                                }
-//                            });
-//                    AlertDialog alertDialog = alertDialogBuilder.create();
-//                    alertDialog.show();
-//                } else {
-//
-//                    String[] array = all.split(",");
-//                    num_list = new ArrayList<>(Arrays.asList(array));
-//                    Number number = new Number(name.getText().toString(), phone.getText().toString(), all, lottogroup.getText().toString());
-////                    sendNetworkRequest(number);
-//                    ArrangeNum fake = new ArrangeNum(array, lottogroup.getText().toString(), "fake time" , name.getText().toString(), phone.getText().toString());
-//                    Intent intent = new Intent(MainActivity.this, TableActivity.class);
-//                    //intent.putStringArrayListExtra("ArrayList", num_list);
-////                    intent.putStringArrayListExtra("ArrayList", num_list);
-//                    intent.putExtra("Obj", fake);
-//                    startActivity(intent);
-//                }
-//            }
-//        });
     }
-    public void initial(){
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.mymenu_main_activity, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.btnLogout : {
+//                Call<ResponseDao> call = ApiService.httpManager().logout();
+//                call.enqueue(new Callback<ResponseDao>() {
+//                    @Override
+//                    public void onResponse(Call<ResponseDao> call, Response<ResponseDao> response) {
+//                        if (response.isSuccessful()) {
+//                            Toast.makeText(getApplicationContext(), response.body().getMessage(),Toast.LENGTH_SHORT).show();
+//                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+//                            startActivity(intent);
+//                            finish();
+//                            Injection.setToken(null);
+//                        } else {
+//                           Log.e("onResponseError", response.body().getMessage());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<ResponseDao> call, Throwable t) {
+//                        Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_SHORT).show();
+//                        Log.e("logoutError", t.toString());
+//                    }
+//                });
+//
+//            }
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+
+    public void initial() {
         SharedPreferences p = getSharedPreferences("rial", 0);
         Gson gson = new Gson();
         String json = p.getString("MyObject", null);
-        String nameText = p.getString("name",null);
+        String nameText = p.getString("name", null);
         String phoneText = p.getString("phone", null);
-        if(nameText != null && phoneText != null){
+        if (nameText != null && phoneText != null) {
             name.setText(nameText);
             phone.setText(phoneText);
         }
-        if(json != null) {
+        if (json != null) {
             Type type = new TypeToken<ArrayList<ArrangeNum>>() {
             }.getType();
             tablesList = gson.fromJson(json, type);
         }
     }
 
-    public void onPause(){
+    public void onPause() {
         super.onPause();
-        SharedPreferences p = getSharedPreferences("rial",MODE_PRIVATE);
+        SharedPreferences p = getSharedPreferences("rial", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = gson.toJson(tablesList);
         p.edit().putString("MyObject", json).apply();
-        p.edit().putString("name",name.getText().toString()).apply();
+        p.edit().putString("name", name.getText().toString()).apply();
         p.edit().putString("phone", phone.getText().toString()).apply();
+        p.edit().putString("token", Injection.getToken()).apply();
     }
 
     public void scan(View view) {
@@ -190,15 +154,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         String lottoName = lottogroup.getText().toString();
         if (name.getText().toString().length() != 0 && lottoName.length() != 0 && phone.toString().length() != 0) {
             String title;
-            for (ArrangeNum a : tablesList){
-                    title = a.lottogroup;
-                if(title.equals(lottoName)){
-                    alertBox("ลองใหม่อีกครั้ง","ชื่อลอตที่ซ้ำ กรุณาใช้ชื่ออื่น");
+            for (ArrangeNum a : tablesList) {
+                title = a.lottogroup;
+                if (title.equals(lottoName)) {
+                    alertBox("ลองใหม่อีกครั้ง", "ชื่อลอตที่ซ้ำ กรุณาใช้ชื่ออื่น");
                     requestCode = -1;
                     break;
                 }
             }
-            if(requestCode == 2404){
+            if (requestCode == 2404) {
                 Intent intent = new Intent(MainActivity.this.getApplicationContext(), Scanner.class);
                 intent.putExtra("lottogroup", lottoName);
                 intent.putExtra("name", name.getText().toString());
@@ -207,15 +171,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
                 lottogroup.setText("");
 
                 startActivityForResult(intent, requestCode);
-                SharedPreferences p = getSharedPreferences("rial",MODE_PRIVATE);
+                SharedPreferences p = getSharedPreferences("rial", MODE_PRIVATE);
                 Gson gson = new Gson();
                 String json = gson.toJson(tablesList);
                 p.edit().putString("MyObject", json).apply();
-                p.edit().putString("name",name.getText().toString()).apply();
+                p.edit().putString("name", name.getText().toString()).apply();
                 p.edit().putString("phone", phone.getText().toString()).apply();
             }
         } else {
-            alertBox("ลองใหม่อีกครั้ง","กรุณากรอกรายละเอียดให้ครบทุกช่อง");
+            alertBox("ลองใหม่อีกครั้ง", "กรุณากรอกรายละเอียดให้ครบทุกช่อง");
         }
     }
 
@@ -225,40 +189,18 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         if (resultCode == RESULT_OK) {
             if (requestCode == 2404 && data != null) {
                 all = data.getStringExtra("allNum");
-                fromScan =  (ArrangeNum) data.getSerializableExtra("Obj");
+                fromScan = (ArrangeNum) data.getSerializableExtra("Obj");
                 tablesList.add(fromScan);
-                setRecycleView();
-                //Toast.makeText(getAp plicationContext(),"Hello from 2404",Toast.LENGTH_SHORT).show();
+                mAdapter.notifyDataSetChanged();
+                //Toast.makeText(getApplicationContext(),"Hello from 2404",Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void sendNetworkRequest(Number num) {
-        //Create retrofit instance
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create());
 
-        Retrofit retrofit = builder.build();
-        //Get client & call object for request
-        PostNumber client = retrofit.create(PostNumber.class);
-        Call<Void> call = client.sendNum(num);
 
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                Toast.makeText(MainActivity.this, "Send successful", Toast.LENGTH_SHORT).show();
-                //Log.i("check", response.body());
-            }
 
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "something went wrong :(", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public String pseudoData(){
+    public String pseudoData() {
 //        String data = "0280,2220,2250,2340,3070,3540,4730,5960,6000,6080,6600,7130,7360,7670,8640,0221,0451,1611,3761," +
 //                "3921,4881,5891,6001,7011,7131,7491,8501,8671,9581,0132,0232,1342,2352,4262,4492,4602,7142,7492,9452,9492," +
 //                "0133,1073,1693,2783," +
@@ -312,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT,  this);
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
@@ -322,7 +264,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
                 Intent intent = new Intent(MainActivity.this, TableActivity.class);
                 intent.putExtra("Obj", arrangeNum);
                 startActivity(intent);
-//                Toast.makeText(getApplicationContext(), arrangeNum.getLottogroup() + " is selected!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -336,21 +277,20 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         if (viewHolder instanceof ArrangeNumAdapter.MyViewHolder) {
             // remove the item from recycler view
             mAdapter.removeItem(viewHolder.getAdapterPosition());
-
         }
     }
 
-    public void addNewDeleteOld(){
+    public void addNewDeleteOld() {
         fromScan = (ArrangeNum) intent.getSerializableExtra("Obj");
         String idFromScan = fromScan.lottogroup;
         Log.i("position", idFromScan);
         String idFromList;
         int position = -1;
 
-        for (ArrangeNum a : tablesList){
+        for (ArrangeNum a : tablesList) {
             idFromList = a.lottogroup;
             Log.i("position", idFromList);
-            if(idFromList.equals(idFromScan)){
+            if (idFromList.equals(idFromScan)) {
                 position = tablesList.indexOf(a);
                 mAdapter.removeItem(position);
                 break;
@@ -359,7 +299,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         Log.i("position", String.valueOf(position));
         tablesList.add(fromScan);
     }
-    public void alertBox(String title, String msg){
+
+    public void alertBox(String title, String msg) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
@@ -376,29 +317,46 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
                         dialog.cancel();
                     }
                 });
-//                    .setNegativeButton("No",new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            // if this button is clicked, just close
-//                            // the dialog box and do nothing
-//                            dialog.cancel();
-//                        }
-//                    });
-
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
 
         // show it
         alertDialog.show();
+        TextView textView = alertDialog.findViewById(android.R.id.message);
+        textView.setTextSize(20);
     }
 
-    public String[] generateNum(int x){
+    private String matchedAll() {
+        if (tablesList.size() == 0 ) {
+            return null;
+        }
+        ArrayList<String> temp = new ArrayList<>();
+        ArrayList<String> matched = new ArrayList<>();
+        for(int i = 0 ; i < tablesList.size() ;i++) {
+            ArrayList<String> array = tablesList.get(i).all;
+            for (int j = 0; j < array.size(); j++) {
+                if (temp.contains(array.get(j))) matched.add(array.get(j));
+                temp.add(array.get(j));
+            }
+        }
+        Collections.sort(matched);
+        matchAmount = matched.size();
+        String x = "";
+        for (String num : matched) {
+            x += num + " - ";
+        }
+        if (x == "") return "No matched";
+        return x.trim().substring(0, x.length() - 1);
+    }
+
+    public String[] generateNum(int x) {
         ArrayList<String> randomNum = new ArrayList<>();
         int num;
         String value;
-        for (int i =0 ; i < x ; i++){
+        for (int i = 0; i < x; i++) {
             num = (int) (Math.random() * 9999);
             value = String.valueOf(num);
-            while(value.length() != 4) {
+            while (value.length() != 4) {
                 value = 0 + value;
             }
             randomNum.add(value);

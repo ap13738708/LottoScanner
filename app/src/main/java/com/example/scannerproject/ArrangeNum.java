@@ -117,7 +117,7 @@ public class ArrangeNum implements Serializable {
     }
     public int getSize(){ return this.size; }
 
-    public void removeNum(String[] array) throws Exception{
+    public void removeNum(String[] array) throws Exception {
         for (String num : array){
             int index = Integer.parseInt(num.substring(3));
             if(arrayOfArrayList[index].contains(num)){
